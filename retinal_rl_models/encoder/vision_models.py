@@ -1,25 +1,25 @@
 import torch
 from torch import nn
-from retinal_rl_models.util import activation
+from retinal_rl_models.util import activation, calc_num_elements
 from collections import OrderedDict
 
-class RetinalModel(Encoder):
+class RetinalModel(nn.Module):
 
-    def __init__(self, cfg: Config, obs_space: ObsSpace):
+    def __init__(self, base_channels, out_size, inp_shape, retinal_bottleneck=None, act_name="ELU"):
 
-        super().__init__(cfg)
+        self.act_name = act_name
+        self.encoder_out_size = out_size
 
         # Activation function
-        self.act_name = cfg.activation
-        self.nl_fc = activation(cfg.activation)
+        self.nl_fc = activation(self.act_name)
 
         # Saving parameters
-        self.bp_chans = cfg.base_channels
+        self.bp_chans = base_channels
         self.rgc_chans = self.bp_chans * 2
         self.v1_chans = self.rgc_chans * 2
 
-        if cfg.retinal_bottleneck is not None:
-            self.btl_chans = cfg.retinal_bottleneck
+        if retinal_bottleneck is not None:
+            self.btl_chans = retinal_bottleneck
         else:
             self.btl_chans = self.rgc_chans
 
@@ -63,9 +63,7 @@ class RetinalModel(Encoder):
 
         self.conv_head = nn.Sequential(conv_layers)
 
-        cout_hght, cout_wdth = encoder_out_size(self.conv_head, *obs_space.shape[1:])
-        self.conv_head_out_size = cout_hght * cout_wdth * self.v1_chans
-        self.encoder_out_size = cfg.rnn_size
+        self.conv_head_out_size = calc_num_elements(self.conv_head, inp_shape)
         self.fc1 = nn.Linear(self.conv_head_out_size, self.encoder_out_size)
 
     def forward(self, x):
@@ -80,25 +78,22 @@ class RetinalModel(Encoder):
 
 
 # Retinal Stride Encoder
+class RetinalStrideModel(nn.Module):
 
+    def __init__(self, base_channels, out_size, inp_shape, retinal_bottleneck=None, act_name="ELU"):
 
-class RetinalStrideModel(Encoder):
-
-    def __init__(self, cfg: Config, obs_space: ObsSpace):
-
-        super().__init__(cfg)
-
+        self.act_name = act_name
+        self.encoder_out_size = out_size
         # Activation function
-        self.act_name = cfg.activation
-        self.nl_fc = activation(cfg.activation)
+        self.nl_fc = activation(act_name)
 
         # Saving parameters
-        self.bp_chans = cfg.base_channels
+        self.bp_chans = base_channels
         self.rgc_chans = self.bp_chans * 2
         self.v1_chans = self.rgc_chans * 2
 
-        if cfg.retinal_bottleneck is not None:
-            self.btl_chans = cfg.retinal_bottleneck
+        if retinal_bottleneck is not None:
+            self.btl_chans = retinal_bottleneck
         else:
             self.btl_chans = self.rgc_chans
 
@@ -147,9 +142,7 @@ class RetinalStrideModel(Encoder):
 
         self.conv_head = nn.Sequential(conv_layers)
 
-        cout_hght, cout_wdth = encoder_out_size(self.conv_head, *obs_space.shape[1:])
-        self.conv_head_out_size = cout_hght * cout_wdth * self.v1_chans
-        self.encoder_out_size = cfg.rnn_size
+        self.conv_head_out_size = calc_num_elements(self.conv_head, inp_shape)
         self.fc1 = nn.Linear(self.conv_head_out_size, self.encoder_out_size)
 
     def forward(self, x):
@@ -164,22 +157,13 @@ class RetinalStrideModel(Encoder):
 
 
 # Prototypical Encoder
+class PrototypicalModel(nn.Module):
 
+    def __init__(self, out_size, inp_shape, act_name="ELU"):
 
-class PrototypicalModel(Encoder):
-
-    def __init__(self, cfg: Config, obs_space: ObsSpace):
-
-        super().__init__(cfg)
-
-        self.nl_fc = activation(cfg.activation)
-        self.act_name = cfg.activation
-        # self.krnsz = cfg.kernel_size
-        # self.gchans = cfg.base_channels
-        # self.pad = (self.krnsz - 1) // 2
-
-        # Preparing Conv Layers
-        # [[input_channels, 32, 8, 4], [32, 64, 4, 2], [64, 128, 3, 2]]
+        self.act_name = act_name
+        self.encoder_out_size = out_size
+        self.nl_fc = activation(act_name)
         conv_layers = OrderedDict(
             [
                 ("conv1_filters", nn.Conv2d(3, 32, 8, stride=4)),
@@ -192,8 +176,7 @@ class PrototypicalModel(Encoder):
         )
 
         self.conv_head = nn.Sequential(conv_layers)
-        self.conv_head_out_size = calc_num_elements(self.conv_head, obs_space.shape)
-        self.encoder_out_size = cfg.rnn_size
+        self.conv_head_out_size = calc_num_elements(self.conv_head, inp_shape)
         self.fc1 = nn.Linear(self.conv_head_out_size, self.encoder_out_size)
 
     def forward(self, x):
