@@ -3,9 +3,18 @@ from torch import nn
 from retinal_rl_models.util import activation, calc_num_elements
 from collections import OrderedDict
 
+
 class RetinalModel(nn.Module):
 
-    def __init__(self, base_channels, out_size, inp_shape, retinal_bottleneck=None, act_name="ELU"):
+    def __init__(
+        self,
+        base_channels: int,
+        out_size: int,
+        inp_shape: tuple[int, int],
+        retinal_bottleneck: int = None,
+        act_name: str = "ELU",
+    ):
+        """ """
 
         self.act_name = act_name
         self.encoder_out_size = out_size
@@ -80,7 +89,14 @@ class RetinalModel(nn.Module):
 # Retinal Stride Encoder
 class RetinalStrideModel(nn.Module):
 
-    def __init__(self, base_channels, out_size, inp_shape, retinal_bottleneck=None, act_name="ELU"):
+    def __init__(
+        self,
+        base_channels: int,
+        out_size: int,
+        inp_shape: tuple[int, int],
+        retinal_bottleneck: int = None,
+        act_name: str = "ELU",
+    ):
 
         self.act_name = act_name
         self.encoder_out_size = out_size
@@ -159,7 +175,9 @@ class RetinalStrideModel(nn.Module):
 # Prototypical Encoder
 class PrototypicalModel(nn.Module):
 
-    def __init__(self, out_size, inp_shape, act_name="ELU"):
+    def __init__(
+        self, out_size: int, inp_shape: tuple[int, int], act_name: str = "ELU"
+    ):
 
         self.act_name = act_name
         self.encoder_out_size = out_size
