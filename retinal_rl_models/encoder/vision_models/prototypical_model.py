@@ -1,4 +1,3 @@
-import torch
 from torch import nn
 from retinal_rl_models.util import activation, calc_num_elements
 from collections import OrderedDict
