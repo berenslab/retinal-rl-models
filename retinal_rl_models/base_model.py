@@ -54,6 +54,7 @@ class BaseModel(nn.Module, ABC):
 
     @staticmethod
     def str_to_activation(act: str) -> nn.Module:
+        act = str.lower(act)
         if act == "elu":
             return nn.ELU(inplace=True)
         elif act == "relu":
