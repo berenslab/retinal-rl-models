@@ -10,6 +10,7 @@ class BaseModel(nn.Module, ABC):
     def __init__(self, init_params: dict) -> None:
         """
         Initializes the base model.
+        All params in the dictionary will be added as instance parameters.
 
         init_params: the parameters used to instantiate a model. Simplest way to pass them on: call locals()
         """
@@ -19,6 +20,7 @@ class BaseModel(nn.Module, ABC):
         self._config = init_params
         self._config.pop("self")
         self._config.pop("__class__")
+        self.__dict__.update(self._config)
 
     @property
     def config(self) -> dict:

@@ -5,21 +5,22 @@ from torch import nn
 from retinal_rl_models.base_model import BaseModel
 
 
-# Retinal Stride Encoder
-class RetinalStrideModel(BaseModel):
+class RetinalModel(BaseModel):
     def __init__(
         self,
         base_channels: int,
         out_size: int,
         inp_shape: tuple[int, int, int],
         retinal_bottleneck: int = None,
-        act_name: str = "elu",
+        act_name: str = "ELU",
     ):
-        super().__init__()
+        super().__init__(locals())
+
         self.act_name = act_name
         self.encoder_out_size = out_size
+
         # Activation function
-        self.nl_fc = self.str_to_activation(act_name)
+        self.nl_fc = self.str_to_activation(self.act_name)
 
         # Saving parameters
         self.bp_chans = base_channels
@@ -44,15 +45,10 @@ class RetinalStrideModel(BaseModel):
             [
                 (
                     "bp_filters",
-                    nn.Conv2d(
-                        3,
-                        self.bp_chans,
-                        self.spool,
-                        stride=self.spool,
-                        padding=self.spad,
-                    ),
+                    nn.Conv2d(3, self.bp_chans, self.spool, padding=self.spad),
                 ),
                 ("bp_outputs", self.str_to_activation(self.act_name)),
+                ("bp_averages", nn.AvgPool2d(self.spool, ceil_mode=True)),
                 (
                     "rgc_filters",
                     nn.Conv2d(

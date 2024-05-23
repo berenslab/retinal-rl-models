@@ -10,6 +10,8 @@ class PrototypicalModel(BaseModel):
     def __init__(
         self, out_size: int, inp_shape: tuple[int, int], act_name: str = "ELU"
     ):
+        super().__init__(locals())
+
         self.act_name = act_name
         self.encoder_out_size = out_size
         self.nl_fc = self.str_to_activation(act_name)

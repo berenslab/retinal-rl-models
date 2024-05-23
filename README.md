@@ -12,7 +12,7 @@ pip install -e .
 
 To load a model config, execute the following code:
 ```
-from retinal_rl_models.encoder.vision_models import GenericModel
+from retinal_rl_models.encoder import GenericModel
 
 model = GenericModel.load("retinal_rl_models/configs/stride_downsample.cfg")
 ```

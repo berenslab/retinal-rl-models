@@ -27,7 +27,7 @@ class GenericCNN(BaseModel):
 
         # add parameters to model and apply changes for internal use
         self.inp_shape = inp_shape
-        self.act = act_name
+        self.act_name = act_name
         self.num_layers = num_layers
         self.out_size = out_size
         self.fc_dim = fc_dim
@@ -56,7 +56,9 @@ class GenericCNN(BaseModel):
                     ),
                 )
             )
-            conv_layers.append((self.act + str(i), self.str_to_activation(self.act)))
+            conv_layers.append(
+                (self.act_name + str(i), self.str_to_activation(self.act_name))
+            )
             if i == num_layers - 1 and self.fc_in_size != None:
                 conv_layers.append(
                     ("pool" + str(i), nn.AdaptiveAvgPool2d(output_size=fc_in_size))
@@ -70,7 +72,7 @@ class GenericCNN(BaseModel):
         # Fully connected layer
         fc_in = self.calc_num_elements(self.conv_head, self.inp_shape)
         self.fc = nn.Linear(fc_in, self.out_size)
-        self.nl_fc = self.str_to_activation(self.act)
+        self.nl_fc = self.str_to_activation(self.act_name)
 
     def forward(self, x):
         x = self.conv_head(x)
