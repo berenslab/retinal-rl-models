@@ -13,7 +13,6 @@ class GenericCNN(BaseModel):
         num_layers: int = 3,
         fc_dim: int = 128,
         fc_in_size: int = None,
-        in_channels: int = 3,
         num_channels: int | list[int] = 16,
         kernel_size: int | list[int] = 3,
         stride: int | list[int] = 1,
@@ -31,7 +30,6 @@ class GenericCNN(BaseModel):
         self.out_size = out_size
         self.fc_dim = fc_dim
         self.fc_in_size = fc_in_size
-        self.in_channels = in_channels
         self.padding = assert_list(padding, self.num_layers)
         self.dilation = assert_list(dilation, self.num_layers)
         self.num_channels = assert_list(num_channels, self.num_layers)
@@ -42,7 +40,7 @@ class GenericCNN(BaseModel):
         conv_layers = []
         # Define convolutional layers
         for i in range(num_layers):
-            in_channels = self.in_channels if i == 0 else self.num_channels[i - 1]
+            in_channels = self.inp_shape[0] if i == 0 else self.num_channels[i - 1]
             conv_layers.append(
                 (
                     "conv" + str(i),
