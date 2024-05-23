@@ -12,15 +12,15 @@ class PrototypicalModel(BaseModel):
 
         self.act_name = act_name
         self.encoder_out_size = out_size
-        self.nl_fc = self.get_activation(act_name)
+        self.nl_fc = self.str_to_activation(act_name)
         conv_layers = OrderedDict(
             [
                 ("conv1_filters", nn.Conv2d(3, 32, 8, stride=4)),
-                ("conv1_output", self.get_activation(self.act_name)),
+                ("conv1_output", self.str_to_activation(self.act_name)),
                 ("conv2_filters", nn.Conv2d(32, 64, 4, stride=2)),
-                ("conv2_output", self.get_activation(self.act_name)),
+                ("conv2_output", self.str_to_activation(self.act_name)),
                 ("conv3_filters", nn.Conv2d(64, 128, 3, stride=2)),
-                ("conv3_output", self.get_activation(self.act_name)),
+                ("conv3_output", self.str_to_activation(self.act_name)),
             ]
         )
 

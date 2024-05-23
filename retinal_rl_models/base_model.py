@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 
 class BaseModel(nn.Module, ABC):
-    def __init__(self, init_params) -> None:
+    def __init__(self, init_params: dict) -> None:
         """
         Initializes the base model.
 
@@ -51,8 +51,8 @@ class BaseModel(nn.Module, ABC):
                 )
         return model
     
-
-    def get_activation(act) -> nn.Module:
+    @staticmethod
+    def str_to_activation(act:str) -> nn.Module:
         if act == "elu":
             return nn.ELU(inplace=True)
         elif act == "relu":
@@ -66,7 +66,8 @@ class BaseModel(nn.Module, ABC):
         else:
             raise Exception("Unknown activation function")
         
-    def calc_num_elements(module, module_input_shape):
+    @staticmethod
+    def calc_num_elements(module: nn.Module, module_input_shape: tuple[int]):
         shape_with_batch_dim = (1,) + module_input_shape
         some_input = torch.rand(shape_with_batch_dim)
         num_elements = module(some_input).numel()

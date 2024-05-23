@@ -18,7 +18,7 @@ class RetinalStrideModel(BaseModel):
         self.act_name = act_name
         self.encoder_out_size = out_size
         # Activation function
-        self.nl_fc = self.get_activation(act_name)
+        self.nl_fc = self.str_to_activation(act_name)
 
         # Saving parameters
         self.bp_chans = base_channels
@@ -51,24 +51,24 @@ class RetinalStrideModel(BaseModel):
                         padding=self.spad,
                     ),
                 ),
-                ("bp_outputs", self.get_activation(self.act_name)),
+                ("bp_outputs", self.str_to_activation(self.act_name)),
                 (
                     "rgc_filters",
                     nn.Conv2d(
                         self.bp_chans, self.rgc_chans, self.spool, padding=self.spad
                     ),
                 ),
-                ("rgc_outputs", self.get_activation(self.act_name)),
+                ("rgc_outputs", self.str_to_activation(self.act_name)),
                 ("rgc_averages", nn.AvgPool2d(self.spool, ceil_mode=True)),
                 ("btl_filters", nn.Conv2d(self.rgc_chans, self.btl_chans, 1)),
-                ("btl_outputs", self.get_activation(self.act_name)),
+                ("btl_outputs", self.str_to_activation(self.act_name)),
                 (
                     "v1_filters",
                     nn.Conv2d(
                         self.btl_chans, self.v1_chans, self.mpool, padding=self.mpad
                     ),
                 ),
-                ("v1_simple_outputs", self.get_activation(self.act_name)),
+                ("v1_simple_outputs", self.str_to_activation(self.act_name)),
                 ("v1_complex_outputs", nn.MaxPool2d(self.mpool, ceil_mode=True)),
             ]
         )
