@@ -1,11 +1,12 @@
-from torch import nn
 from collections import OrderedDict
+
+from torch import nn
+
 from retinal_rl_models.base_model import BaseModel
 
 
 # Retinal Stride Encoder
 class RetinalStrideModel(BaseModel):
-
     def __init__(
         self,
         base_channels: int,
@@ -79,7 +80,6 @@ class RetinalStrideModel(BaseModel):
         self.fc1 = nn.Linear(self.conv_head_out_size, self.encoder_out_size)
 
     def forward(self, x):
-
         x = self.conv_head(x)
         x = x.contiguous().view(-1, self.conv_head_out_size)
         x = self.nl_fc(self.fc1(x))

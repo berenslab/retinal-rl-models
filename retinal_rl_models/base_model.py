@@ -1,10 +1,9 @@
 import os
-from torch.nn.modules.utils import _pair
+from abc import ABC
 
 import torch
 import torch.nn as nn
 import yaml
-from abc import ABC, abstractmethod
 
 
 class BaseModel(nn.Module, ABC):
@@ -50,9 +49,9 @@ class BaseModel(nn.Module, ABC):
                     torch.load(weights_file, map_location=torch.device("cpu"))
                 )
         return model
-    
+
     @staticmethod
-    def str_to_activation(act:str) -> nn.Module:
+    def str_to_activation(act: str) -> nn.Module:
         if act == "elu":
             return nn.ELU(inplace=True)
         elif act == "relu":
@@ -65,7 +64,7 @@ class BaseModel(nn.Module, ABC):
             return nn.Identity(inplace=True)
         else:
             raise Exception("Unknown activation function")
-        
+
     @staticmethod
     def calc_num_elements(module: nn.Module, module_input_shape: tuple[int]):
         shape_with_batch_dim = (1,) + module_input_shape

@@ -1,10 +1,11 @@
-from torch import nn
-from retinal_rl_models.base_model import BaseModel
 from collections import OrderedDict
+
+from torch import nn
+
+from retinal_rl_models.base_model import BaseModel
 
 
 class RetinalModel(BaseModel):
-
     def __init__(
         self,
         base_channels: int,
@@ -75,7 +76,6 @@ class RetinalModel(BaseModel):
         self.fc1 = nn.Linear(self.conv_head_out_size, self.encoder_out_size)
 
     def forward(self, x):
-
         x = self.conv_head(x)
         x = x.contiguous().view(-1, self.conv_head_out_size)
         x = self.nl_fc(self.fc1(x))

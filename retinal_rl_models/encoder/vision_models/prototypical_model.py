@@ -1,15 +1,15 @@
-from torch import nn
 from collections import OrderedDict
+
+from torch import nn
+
 from retinal_rl_models.base_model import BaseModel
 
 
 # Prototypical Encoder
 class PrototypicalModel(BaseModel):
-
     def __init__(
         self, out_size: int, inp_shape: tuple[int, int], act_name: str = "ELU"
     ):
-
         self.act_name = act_name
         self.encoder_out_size = out_size
         self.nl_fc = self.str_to_activation(act_name)
@@ -29,7 +29,6 @@ class PrototypicalModel(BaseModel):
         self.fc1 = nn.Linear(self.conv_head_out_size, self.encoder_out_size)
 
     def forward(self, x):
-
         x = self.conv_head(x)
         x = x.contiguous().view(-1, self.conv_head_out_size)
         x = self.nl_fc(self.fc1(x))

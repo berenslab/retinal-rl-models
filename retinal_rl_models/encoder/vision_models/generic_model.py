@@ -1,8 +1,10 @@
-import torch.nn as nn
-import torch
-from retinal_rl_models.util import assert_list
-from retinal_rl_models.base_model import BaseModel
 from collections import OrderedDict
+
+import torch
+import torch.nn as nn
+
+from retinal_rl_models.base_model import BaseModel
+from retinal_rl_models.util import assert_list
 
 
 class GenericCNN(BaseModel):
