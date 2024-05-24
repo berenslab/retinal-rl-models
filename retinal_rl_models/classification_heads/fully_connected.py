@@ -1,7 +1,9 @@
+from collections import OrderedDict
+
+import torch
+
 from retinal_rl_models.base_model import BaseModel
 from retinal_rl_models.util import assert_list
-import torch
-from collections import OrderedDict
 
 
 class FullyConnected(BaseModel):
@@ -11,7 +13,7 @@ class FullyConnected(BaseModel):
         out_size: int = 10,
         num_layers: int = 3,
         hidden_dims: int = 1024,
-        act_name="elu"
+        act_name="elu",
     ):
         super().__init__(locals())
 
@@ -28,7 +30,7 @@ class FullyConnected(BaseModel):
                     torch.nn.Linear(_in_size, _out_size),
                 )
             )
-            if i < num_layers-1:
+            if i < num_layers - 1:
                 fcs.append(
                     (
                         self.act_name + str(i),

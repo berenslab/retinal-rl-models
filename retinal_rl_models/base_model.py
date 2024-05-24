@@ -34,7 +34,6 @@ class BaseModel(nn.Module, ABC):
                 yaml.dump(config, f)
         torch.save(self.state_dict(), filename + ".pth")
 
-    @classmethod
     @staticmethod
     def load(model_path, weights_file=None):
         with open(model_path + ".cfg", "r") as file:
