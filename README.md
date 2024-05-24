@@ -12,7 +12,8 @@ pip install -e .
 
 To load a model config, execute the following code:
 ```
-from retinal_rl_models.encoder import GenericModel
+from retinal_rl_models.base_model import BaseModel
 
-model = GenericModel.load("retinal_rl_models/configs/stride_downsample.cfg")
+model = BaseModel.load("retinal_rl_models/configs/stride_downsample.cfg")
 ```
+The function automatically imports the correct class based on the config. If there is a .pth file with the same name, the weights from that file are also loaded.
