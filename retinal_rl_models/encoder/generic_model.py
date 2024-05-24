@@ -13,7 +13,6 @@ class GenericModel(BaseModel):
         inp_shape: tuple[int, int, int],
         out_size: int,
         num_layers: int = 3,
-        fc_dim: int = 128,
         fc_in_size: int = None,
         num_channels: int | list[int] = 16,
         kernel_size: int | list[int] = 3,
@@ -23,15 +22,8 @@ class GenericModel(BaseModel):
         act_name="relu",
         pooling_ks: int | list[int] = 1,
     ):
-        super().__init__(locals())
-
         # add parameters to model and apply changes for internal use
-        self.inp_shape = inp_shape
-        self.act_name = act_name
-        self.num_layers = num_layers
-        self.out_size = out_size
-        self.fc_dim = fc_dim
-        self.fc_in_size = fc_in_size
+        super().__init__(locals())
         self.padding = assert_list(padding, self.num_layers)
         self.dilation = assert_list(dilation, self.num_layers)
         self.num_channels = assert_list(num_channels, self.num_layers)
