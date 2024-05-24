@@ -7,7 +7,7 @@ from retinal_rl_models.base_model import BaseModel
 from retinal_rl_models.util import assert_list
 
 
-class GenericCNN(BaseModel):
+class GenericModel(BaseModel):
     def __init__(
         self,
         inp_shape: tuple[int, int, int],
