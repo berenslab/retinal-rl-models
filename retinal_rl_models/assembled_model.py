@@ -1,6 +1,7 @@
 from retinal_rl_models.base_model import BaseModel
 from torch import nn
 from collections import OrderedDict
+import os
 
 class AssembledModel(BaseModel):
     """
@@ -29,3 +30,13 @@ class AssembledModel(BaseModel):
 
     def forward(self, x):
         return self.partial_models(x)
+    
+    def save(self, filename, save_cfg=True, unassembled=False):
+        if not unassembled:
+            super().save(filename, save_cfg)
+        else:
+            if not os.path.exists(filename):
+                os.mkdir(filename)
+            for model in self.partial_models: # TODO: Implement loading from folder?
+                model_path = os.path.join(filename, model.config["type"])
+                model.save(model_path, save_cfg)
