@@ -17,7 +17,7 @@ class FullyConnected(BaseModel):
     ):
         super().__init__(locals())
 
-        self.hidden_dims = assert_list(hidden_dims, self.num_layers)
+        self.hidden_dims = assert_list(hidden_dims, self.num_layers - 1)
 
         fcs = []
 
