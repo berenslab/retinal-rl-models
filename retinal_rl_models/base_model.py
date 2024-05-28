@@ -18,8 +18,10 @@ class BaseModel(nn.Module, ABC):
 
         # Store all parameters as config
         self._config = init_params
-        self._config.pop("self")
-        self._config.pop("__class__")
+        if "self" in self._config:
+            self._config.pop("self")
+        if "__class__" in self._config:
+            self._config.pop("__class__")
         self.__dict__.update(self._config)
 
     @property
@@ -35,12 +37,16 @@ class BaseModel(nn.Module, ABC):
         torch.save(self.state_dict(), filename + ".pth")
 
     @staticmethod
+    def model_from_config(config:dict):
+        _module = importlib.import_module(config["module"])
+        _class = getattr(_module, config["type"])
+        return _class(**config["config"])
+
+    @staticmethod
     def load(model_path, weights_file=None):
         with open(model_path + ".cfg", "r") as file:
             config = yaml.load(file, Loader=yaml.FullLoader)
-        _module = importlib.import_module(config["module"])
-        _class = getattr(_module, config["type"])
-        model = _class(**config["config"])
+        model = BaseModel.model_from_config(config)
 
         if weights_file is None:
             weights_file = model_path + ".pth"
